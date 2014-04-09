@@ -1,10 +1,11 @@
 'use strict';
 
-/* Filters */
+var nvFilters = angular.module('nvFilters', []);
 
-angular.module('myApp.filters', []).
-  filter('interpolate', ['version', function(version) {
+nvFilters.filter('truncate', function() {
     return function(text) {
-      return String(text).replace(/\%VERSION\%/mg, version);
+        var chars = 20;
+        return [].slice.call(text, 0, chars).join('');
     };
-  }]);
+});
+

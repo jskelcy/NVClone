@@ -1,9 +1,9 @@
 'use strict';
 
-/* Services */
+var nvServices = angular.module('nvServices', ['ngResource']);
 
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
-angular.module('myApp.services', []).
-  value('version', '0.1');
+nvServices.factory('noteData',[ '$resource', function($resource){
+    return $resource('/app/data/fakeData.json', {}, {
+        query: {method:'GET' , isArray: true ,cache: true }
+    })
+}]);

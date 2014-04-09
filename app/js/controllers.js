@@ -1,11 +1,17 @@
 'use strict';
 
-/* Controllers */
+//all imports are taken care of at the app level
 
-angular.module('myApp.controllers', [])
-  .controller('MyCtrl1', [function() {
+var nvControllers =  angular.module('nvControllers', []);
 
-  }])
-  .controller('MyCtrl2', [function() {
+nvControllers.controller('NoteCtrl', ['$scope','noteData', '$routeParams', function($scope, noteData, $routeParams) {
+    $scope.noteId = $routeParams.id;
+    $scope.notes = noteData.query(function(){
+        $scope.targetNote = $scope.notes[$scope.noteId];
+        console.log($scope.targetNote);
+    });
+}]);
 
-  }]);
+nvControllers.controller('NotesCollectionCtrl',['$scope','noteData', function($scope, noteData){
+    $scope.notes = noteData.query();
+}]);
