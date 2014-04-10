@@ -6,8 +6,9 @@ var express = require('express'),
 app.use(express.static(__dirname));
 app.use(express.bodyParser());
 
-var dbUri = 'mongodb://127.0.0.1:27017/test';
-var dbCollection = 'fakeNotes';
+var dbUri = 'mongodb://127.0.0.1:27017/test',
+    dbCollection = 'fakeNotes',
+    port = 2000;
 
 app.get('/api/notes', function(req, res) {
     MongoClient.connect(dbUri, function(err, db) {
@@ -15,7 +16,13 @@ app.get('/api/notes', function(req, res) {
         var collection = db.collection(dbCollection);
         
         collection.find().toArray(function(err, results){
-            res.json(results);
+            //reudces array into json obj where id is key and obj is value
+            //deletes id inside value
+            res.json(results.reduce(function(acc, item) {
+                acc[item.id] = item;
+                delete acc[item.id].id;
+                return acc;
+            }, {}));
         });
     });
 });
@@ -85,6 +92,7 @@ app.get('/',function(req, res){
     res.redirect('/app/index.html');
 });
 
-app.listen(4000);
+app.listen(port);
+console.log('server running on port', port)
 
 

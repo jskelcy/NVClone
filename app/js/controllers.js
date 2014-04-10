@@ -8,7 +8,6 @@ nvControllers.controller('NoteCtrl', ['$scope','noteData', '$routeParams', funct
     $scope.noteId = $routeParams.id;
     $scope.notes = noteData.query(function(){
         $scope.targetNote = $scope.notes[$scope.noteId];
-        console.log($scope.targetNote);
     });
 }]);
 
