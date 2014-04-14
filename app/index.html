@@ -7,12 +7,14 @@
     </head>
     <body>
         <div ng-controller="NotesCollectionCtrl">
-            <input type="text" ng-model="query" > 
+            <div id="magic-bar">
+            <input type="text" placeholder="Search or Create" ng-model="query" ng-keypress="keypressHandler($event)"> 
+        </div>
             <ul class='notes'>
-                <li ng-repeat="(id, note) in notes | filter:query">
+               <li ng-repeat="(id, note) in notes | filterNotes:'title':query">
                 <a ng-href="#/note/{{id}}">
                     {{note.title}} {{note.body | truncate}}
-                </a>
+                </a><span ng-click="removeNote(id)">x</span>
                 </li>
             </ul>
         </div>

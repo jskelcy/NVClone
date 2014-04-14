@@ -10,3 +10,15 @@ nvFilters.filter('truncate', function() {
     };
 });
 
+nvFilters.filter('filterNotes', function() {
+    return function (input, filterKey, filterVal) {
+        if (!filterVal) return input;
+        var filteredInput ={};
+        angular.forEach(input, function(value, key){
+            if(value[filterKey] && value[filterKey].indexOf(filterVal) !== -1){
+                filteredInput[key]= value;
+            }
+        });
+        return filteredInput;
+    }
+});

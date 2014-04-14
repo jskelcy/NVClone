@@ -1,3 +1,4 @@
-<div>
-    {{targetNote.body || "No Note Selected"}}
+<div id="note-body">
+    <textarea ng-keypress="noteKeyPressHandler()" ng-model='targetNote.body'>
+    </textarea>
 </div>

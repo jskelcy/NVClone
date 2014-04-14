@@ -10,6 +10,7 @@ var dbUri = 'mongodb://127.0.0.1:27017/test',
     dbCollection = 'fakeNotes',
     port = 2000;
 
+//get all the notes when you log in
 app.get('/api/notes', function(req, res) {
     MongoClient.connect(dbUri, function(err, db) {
         if (err) throw err;
@@ -27,6 +28,8 @@ app.get('/api/notes', function(req, res) {
     });
 });
 
+
+//get one note with noteId equal to id
 app.get('/api/notes/:id', function(req, res) {
     var noteId = parseInt(req.params.id, 10);
 
@@ -40,6 +43,8 @@ app.get('/api/notes/:id', function(req, res) {
     });
 });
 
+
+//create a new note
 app.post('/api/notes', function(req, res) {
     var data = {
         body: req.body.body,
@@ -58,6 +63,8 @@ app.post('/api/notes', function(req, res) {
     });
 });
 
+
+//update note
 app.put('/api/notes/:id', function(req, res){
     var noteId = parseInt(req.params.id, 10);
     
@@ -76,6 +83,8 @@ app.put('/api/notes/:id', function(req, res){
     });
 });
 
+
+//get rid of a note
 app.delete('/api/notes/:id',function(req, res) {
     var noteId = parseInt(req.params.id, 10);
 
