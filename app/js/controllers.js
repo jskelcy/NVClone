@@ -19,7 +19,6 @@ nvControllers.controller('NotesCollectionCtrl',['$scope','notesInMemory', functi
     $scope.keypressHandler = function(evt) {
         if (evt.keyCode === 13){
             notesInMemory.addNote($scope.query);
-            console.log('heeeeey');
         }
     }
 }]);

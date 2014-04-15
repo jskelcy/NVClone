@@ -58,7 +58,7 @@ app.post('/api/notes', function(req, res) {
         collection.insert(data, 
             function(err, inserted) {
                 if (err) throw err;
-                res.send(200);
+                res.json({serverNote: inserted[0]});
         });
     });
 });
@@ -71,14 +71,14 @@ app.put('/api/notes/:id', function(req, res){
     var updateData = {};
     if (req.body.body) updateData.body = req.body.body;
     if (req.body.title) updateData.title = req.body.title;
-
+    
     MongoClient.connect(dbUri, function(err, db) {
         if (err) throw err;
         var collection = db.collection(dbCollection);
 
         collection.update({id: noteId}, {$set: updateData}, {}, function(err){
             if(err) throw err;
-            res.send(200);
+            res.json({serverNote: updateData});
         });
     });
 });

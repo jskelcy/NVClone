@@ -3,16 +3,83 @@
 var nvServices = angular.module('nvServices', ['ngResource']);
 
 nvServices.factory('noteData',[ '$resource', function($resource){
-    return $resource('/api/notes', {}, {
-        query: {method:'GET', cache: true }
+    return $resource('/api/notes/:id', {}, {
+        query: {
+           method:'GET', 
+           cache: true,
+           transformResponse: function(res, headers) {
+               var result = JSON.parse(res);
+               return Object.keys(result).reduce(function(acc, item){
+                   acc[item].serverBody = acc[item].body;
+                   acc[item].requestPending = false;
+                   return acc;
+               }, result);
+           }
+        },
+        update: { 
+            method: 'PUT'
+        }
     })
+}]);
+
+
+nvServices.factory('updateLoop', ['notesInMemory', 'noteData', '$interval', function(notesInMemory, noteData, $interval){
+    $interval(loop, 1000);
+
+    function isNote(x) {
+        return x.hasOwnProperty('body');
+    }
+
+    function isRequestPending(note) {
+        return note.requestPending;
+    }
+
+    function deleteNote() {
+        return;
+    }
+    
+    function newNote(noteId, note){
+        if (note._id) return;
+        note.requestPending = true;
+        var newNote = new noteData(note);
+        newNote.$save(function(resource){
+            note.requestPending = false;
+            note.serverBody = newNote.serverNote.body;
+            note._id = newNote.serverNote._id;
+            console.log('new', note);
+        });
+        return true;
+    }
+
+
+    function updateNote(noteId, note){
+        if (note.body === note.serverBody) return;
+        note.requestPending = true;
+        noteData.update({id: noteId}, {body: note.body}, function(resource){
+            note.serverBody = resource.serverNote.body;
+            note.requestPending = false;
+            console.log('updated', note);
+        });
+        return true;
+    }
+
+    function loop(){
+        for (var noteId in notesInMemory.notes) {
+            var note = notesInMemory.notes[noteId];
+            if (isNote(note) && !isRequestPending(note) ) {
+                newNote(noteId, note) || updateNote(noteId, note) || deleteNote(noteId, note);
+            } 
+        }
+    }
+
 }]);
 
 
 nvServices.factory('notesInMemory', ['noteData', function(noteData){
     var highest;
     var allNotesInMemory = noteData.query(function(data){
-        highest = getMaxId(data);    
+        highest = getMaxId(data);
+
     });
 
     function getMaxId(notes){
@@ -25,7 +92,7 @@ nvServices.factory('notesInMemory', ['noteData', function(noteData){
     function updateNote(noteId, newNote){
         allNotesInMemory[noteId].body = newNote.body;
     }
-    
+
     function removeNote(noteId){
         allNotesInMemory[noteId] && delete allNotesInMemory[noteId];
     }
