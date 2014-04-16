@@ -34,14 +34,12 @@ nvServices.factory('updateLoop', ['notesInMemory', 'noteData', '$interval', func
         return note.requestPending;
     }
 
-    function deleteNote() {
-        return;
-    }
     
     function newNote(noteId, note){
         if (note._id) return;
         note.requestPending = true;
         var newNote = new noteData(note);
+        newNote.id = noteId;
         newNote.$save(function(resource){
             note.requestPending = false;
             note.serverBody = newNote.serverNote.body;
@@ -62,14 +60,17 @@ nvServices.factory('updateLoop', ['notesInMemory', 'noteData', '$interval', func
         });
         return true;
     }
+    
+    function deleteNote() {
+        return;
+    }
 
     function loop(){
-        for (var noteId in notesInMemory.notes) {
-            var note = notesInMemory.notes[noteId];
+        angular.forEach(notesInMemory.notes, function(note, noteId) {
             if (isNote(note) && !isRequestPending(note) ) {
                 newNote(noteId, note) || updateNote(noteId, note) || deleteNote(noteId, note);
             } 
-        }
+        });
     }
 
 }]);

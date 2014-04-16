@@ -51,6 +51,7 @@ app.post('/api/notes', function(req, res) {
         title: req.body.title,
         id: parseInt(req.body.id, 10)
     };
+    console.log(req.body)
     MongoClient.connect(dbUri, function(err, db) {
         if (err) throw err;
         var collection = db.collection(dbCollection);
