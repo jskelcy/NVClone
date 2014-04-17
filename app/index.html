@@ -3,26 +3,37 @@
     <head>
         <meta charset="utf-8">
         <title>nvClone</title>
-        <link rel="stylesheet" href="css/app.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="../bower_components/angular-bootstrap-colorpicker/css/colorpicker.css"/>
     </head>
-    <body ng-controller="AppCtrl" ng-style="styles.body">
+    <body ng-controller="AppCtrl">
         <div ng-controller="NotesCollectionCtrl">
-            <div id="magic-bar" ng-style="styles.magicBar">
+            <div id="magic-bar">
                 <input type="text" placeholder="Search or Create" ng-model="input.q" ng-keypress="keypressHandler($event)"> 
             </div>
-            <ul class='notes'>
-               <li ng-repeat="(id, note) in notes | filterNotes:'title':input.q">
-                <a ng-href="#/note/{{id}}">
-                    <strong>{{note.title}}</strong> {{note.body | truncate}}
-                </a><span ng-click="removeNote(id)">x</span>
-                </li>
-            </ul>
+            <div class="notes-wrap">
+            <table class="notes">
+                <tr><th>Title</th></tr>
+                <tr ng-repeat="(id, note) in notes | filterNotes:'title':input.q">
+                    <td><a ng-href="#/note/{{id}}">
+                            <span class="title">{{note.title}}</span><span class="summary"> {{note.body | truncate}}</span>
+                    </a></td>
+                    <td class="remove-note"><span ng-click="removeNote(id)">☠</span></td>
+                </tr>
+            </table>
+            </div>
         </div>
+        <div class="divider-thing"></div>
         <div ng-view></div>
+        <div id="color-settings">
+            <span>Text color:</span><input colorpicker type="text" ng-style="{background: styles.note.color}" ng-model="styles.note.color"> 
+            <span>Background color:</span><input colorpicker type="text" ng-style="{background: styles.note.background}" ng-model="styles.note.background"> 
+        </div>
 
         <script src="../bower_components/angular/angular.js"></script>
         <script src="../bower_components/angular-route/angular-route.js"></script>
         <script src="../bower_components/angular-resource/angular-resource.js"></script>
+        <script src="../bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js"></script>
         <script src="js/app.js"></script>
         <script src="js/services.js"></script>
         <script src="js/controllers.js"></script>

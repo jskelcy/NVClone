@@ -20,7 +20,7 @@ nvControllers.controller('AppCtrl', ['$scope', '$location', 'styles', function($
 
 nvControllers.controller('NoteCtrl', ['$scope', '$routeParams','notesInMemory', 
 function($scope, $routeParams, notesInMemory) {
-    var noteId = $routeParams.id;
+    var noteId = $routeParams.noteId;
     $scope.notes = notesInMemory.notes;
     notesInMemory.notes.$promise.then(function() {
         $scope.targetNote = $scope.notes[noteId];
@@ -42,10 +42,6 @@ function($scope, $location, $rootScope, $route, notesInMemory){
         if (evt.keyCode === 13) {
             var id = notesInMemory.addNote($scope.input.q);
             $location.path('/note/' + id);
-            var deregister = $scope.$on('$routeChangeSuccess', function() {
-                $rootScope.$broadcast('noteCreated');
-                deregister();
-            });
         }
     }
 }]);

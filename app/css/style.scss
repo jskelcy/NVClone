@@ -1,0 +1,111 @@
+$background-color: white;
+$main-font: Arial;
+$main-font-color: black;
+
+
+*, *:before, *:after {
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
+body {
+    background: $background-color;
+    font-family: $main-font;
+    padding: 0;
+    margin: 0;
+}
+
+a:link,
+a:visited {
+    text-decoration: none;
+    color: $main-font-color;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@mixin magic-bar-gradient {
+    background: #e6e6e6;
+    background: -moz-linear-gradient(top,  #e6e6e6 0%, #b0b0b0 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e6e6e6), color-stop(100%,#b0b0b0));
+    background: -webkit-linear-gradient(top,  #e6e6e6 0%,#b0b0b0 100%);
+    background: -o-linear-gradient(top,  #e6e6e6 0%,#b0b0b0 100%);
+    background: -ms-linear-gradient(top,  #e6e6e6 0%,#b0b0b0 100%);
+    background: linear-gradient(to bottom,  #e6e6e6 0%,#b0b0b0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6e6', endColorstr='#b0b0b0',GradientType=0 );
+}
+
+
+@mixin title-gradient {
+    background: #bdd9f3;
+    background: -moz-linear-gradient(top,  #bdd9f3 0%, #8cbef3 36%, #8cbef3 63%, #bdd9f3 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bdd9f3), color-stop(36%,#8cbef3), color-stop(63%,#8cbef3), color-stop(100%,#bdd9f3));
+    background: -webkit-linear-gradient(top,  #bdd9f3 0%,#8cbef3 36%,#8cbef3 63%,#bdd9f3 100%);
+    background: -o-linear-gradient(top,  #bdd9f3 0%,#8cbef3 36%,#8cbef3 63%,#bdd9f3 100%);
+    background: -ms-linear-gradient(top,  #bdd9f3 0%,#8cbef3 36%,#8cbef3 63%,#bdd9f3 100%);
+    background: linear-gradient(to bottom,  #bdd9f3 0%,#8cbef3 36%,#8cbef3 63%,#bdd9f3 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bdd9f3', endColorstr='#bdd9f3',GradientType=0 );  
+ }
+
+.notes-wrap {
+     position: relative;
+}
+.notes {
+    overflow-y: scroll;
+    display: block;
+    height: 9em;  
+    width: 100%;
+    padding: 1.3em .3em .3em .3em;
+    tr:first-child {
+        width: 100%;
+        @include magic-bar-gradient;
+        text-align: left;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .remove-note {
+        &:hover {
+            cursor: pointer;
+            color: red;
+        }
+    }
+    .summary {
+        color: lighten($main-font-color, 55%);
+    }
+}
+
+#note-body textarea{
+    width: 100%;
+    height: 20em;
+    font-family: courier;
+    min-height: 40em;
+}
+
+#magic-bar {
+    @include magic-bar-gradient;
+    padding: 1em;
+    input {
+        width: 100%;
+        border-radius: 3px;
+        border: solid 1px black;
+        padding: .3em 1em;
+}
+}
+
+.divider-thing {
+    @include magic-bar-gradient;
+    height: .5em;
+    border-top: solid 1px black;
+    border-bottom: solid 1px black;
+}
+
+#color-settings input {
+    text-indent: -99999px;
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    border: none;
+}

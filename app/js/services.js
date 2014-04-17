@@ -25,15 +25,9 @@ nvServices.factory('noteData',[ '$resource', function($resource){
 
 nvServices.factory('styles', function() {
    var styles = {
-       body: {
-            background: 'grey',
-            color: 'black'
-        },
-        magicBar: {
-            background: 'black'
-        },
         note: {
-            background: 'white'
+            background: 'rgb(51,40,40)',
+            color: 'rgb(97,194,154)'
         }
     };
     return styles;

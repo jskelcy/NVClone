@@ -5,12 +5,13 @@ var nvClone = angular.module('nvClone', [
   'nvFilters',
   'nvServices',
   'nvDirectives',
-  'nvControllers'
+  'nvControllers',
+  'colorpicker.module'
 ]);
 
 nvClone.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {templateUrl: 'partials/note.html', controller: 'NoteCtrl'});
-  $routeProvider.when('/note/:id', {templateUrl: 'partials/note.html', controller: 'NoteCtrl'});
+  $routeProvider.when('/note/:noteId', {templateUrl: 'partials/note.html', controller: 'NoteCtrl'});
   $routeProvider.otherwise({redirectTo: '/'});
 }]);
 
