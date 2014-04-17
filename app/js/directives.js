@@ -1,10 +1,14 @@
 'use strict';
 
 var nvDirectives = angular.module('nvDirectives', []);
-/*
-nvDirectives = directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
-        elm.text(version);
-    };
+
+nvDirectives.directive('focusOn', ['$timeout', function($timeout) {
+	return {
+		restrict: 'A',
+		link: function(scope, elem, attr) {			
+			scope.$on(attr.focusOn, function(evt) {
+				elem[0].focus();
+			});
+	   }
+	} 
 }]);
-*/

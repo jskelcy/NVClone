@@ -1,4 +1,4 @@
 <div id="note-body">
-    <textarea ng-keypress="noteKeyPressHandler()" ng-model='targetNote.body'>
+    <textarea ng-style="styles.note" focus-on="noteCreated" ng-keypress="noteKeyPressHandler()" ng-model='targetNote.body' ng-cloak>
     </textarea>
 </div>

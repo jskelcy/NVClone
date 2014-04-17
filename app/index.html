@@ -5,15 +5,15 @@
         <title>nvClone</title>
         <link rel="stylesheet" href="css/app.css"/>
     </head>
-    <body>
+    <body ng-controller="AppCtrl" ng-style="styles.body">
         <div ng-controller="NotesCollectionCtrl">
-            <div id="magic-bar">
-            <input type="text" placeholder="Search or Create" ng-model="query" ng-keypress="keypressHandler($event)"> 
-        </div>
+            <div id="magic-bar" ng-style="styles.magicBar">
+                <input type="text" placeholder="Search or Create" ng-model="input.q" ng-keypress="keypressHandler($event)"> 
+            </div>
             <ul class='notes'>
-               <li ng-repeat="(id, note) in notes | filterNotes:'title':query">
+               <li ng-repeat="(id, note) in notes | filterNotes:'title':input.q">
                 <a ng-href="#/note/{{id}}">
-                    {{note.title}} {{note.body | truncate}}
+                    <strong>{{note.title}}</strong> {{note.body | truncate}}
                 </a><span ng-click="removeNote(id)">x</span>
                 </li>
             </ul>

@@ -12,6 +12,7 @@ nvServices.factory('noteData',[ '$resource', function($resource){
                return Object.keys(result).reduce(function(acc, item){
                    acc[item].serverBody = acc[item].body;
                    acc[item].requestPending = false;
+                   acc[item].deletedLocally = false;
                    return acc;
                }, result);
            }
@@ -22,8 +23,25 @@ nvServices.factory('noteData',[ '$resource', function($resource){
     })
 }]);
 
+nvServices.factory('styles', function() {
+   var styles = {
+       body: {
+            background: 'grey',
+            color: 'black'
+        },
+        magicBar: {
+            background: 'black'
+        },
+        note: {
+            background: 'white'
+        }
+    };
+    return styles;
+})
 
-nvServices.factory('updateLoop', ['notesInMemory', 'noteData', '$interval', function(notesInMemory, noteData, $interval){
+nvServices.factory('updateLoop', ['notesInMemory', 'noteData', '$interval', '$window',
+function(notesInMemory, noteData, $interval, $window){
+    
     $interval(loop, 1000);
 
     function isNote(x) {
@@ -33,22 +51,20 @@ nvServices.factory('updateLoop', ['notesInMemory', 'noteData', '$interval', func
     function isRequestPending(note) {
         return note.requestPending;
     }
-
     
-    function newNote(noteId, note){
+    function createNote(noteId, note){
         if (note._id) return;
         note.requestPending = true;
         var newNote = new noteData(note);
         newNote.id = noteId;
         newNote.$save(function(resource){
             note.requestPending = false;
-            note.serverBody = newNote.serverNote.body;
-            note._id = newNote.serverNote._id;
+            note.serverBody = resource.serverNote.body;
+            note._id = resource.serverNote._id;
             console.log('new', note);
         });
         return true;
     }
-
 
     function updateNote(noteId, note){
         if (note.body === note.serverBody) return;
@@ -61,14 +77,21 @@ nvServices.factory('updateLoop', ['notesInMemory', 'noteData', '$interval', func
         return true;
     }
     
-    function deleteNote() {
-        return;
+    function deleteNote(noteId, note) {
+        if (!note.deletedLocally) return;
+        note.requestPending = true;
+        noteData.remove({id: noteId}, {}, function() {
+            delete notesInMemory[noteId];
+            console.log('removed', note);
+        });
     }
 
     function loop(){
+        if (!$window.navigator.onLine) return;
+        // console.log('---loopin---');
         angular.forEach(notesInMemory.notes, function(note, noteId) {
             if (isNote(note) && !isRequestPending(note) ) {
-                newNote(noteId, note) || updateNote(noteId, note) || deleteNote(noteId, note);
+                createNote(noteId, note) || updateNote(noteId, note) || deleteNote(noteId, note);
             } 
         });
     }
@@ -80,14 +103,12 @@ nvServices.factory('notesInMemory', ['noteData', function(noteData){
     var highest;
     var allNotesInMemory = noteData.query(function(data){
         highest = getMaxId(data);
-
     });
 
     function getMaxId(notes){
         return Math.max.apply(null, Object.keys(notes).filter(function(x) {
             return !isNaN(Number(x));
-        }
-        ));
+        }));
     }
 
     function updateNote(noteId, newNote){
@@ -95,7 +116,9 @@ nvServices.factory('notesInMemory', ['noteData', function(noteData){
     }
 
     function removeNote(noteId){
-        allNotesInMemory[noteId] && delete allNotesInMemory[noteId];
+        if (allNotesInMemory[noteId]) {
+            allNotesInMemory[noteId].deletedLocally = true;
+        }
     }
 
     function addNote(title) {
@@ -103,6 +126,7 @@ nvServices.factory('notesInMemory', ['noteData', function(noteData){
             title: title,
             body: ''
         };
+        return highest;
     }
 
     return {
